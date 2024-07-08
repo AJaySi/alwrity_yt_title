@@ -15,6 +15,7 @@ def main():
     # Set page configuration
     st.set_page_config(
         page_title="Alwrity - AI YouTube Title Generator",
+        layout="wide",
     )
     # Remove the extra spaces from margin top.
     st.markdown("""
@@ -97,18 +98,17 @@ def main():
     
     # Generate YouTube Titles button
     if st.button('**Generate YouTube Titles 🎬**'):
-        with st.spinner("Assigning AI professional to write your YouTube Titles..."):
+        with st.status("Assigning AI professional to write your YT Titles..", expanded=True) as status:
             if not main_points:
                 st.error("🚫 Please provide all required inputs.")
             else:
                 response = generate_youtube_title(target_audience, main_points, tone_style, use_case)
                 if response:
-                    st.subheader('**Your Final YouTube Titles! 📢**')
+                    st.subheader(f'**🧕👩: Your Final youtube Titles !**')
                     st.markdown(response)
-                    st.write("\n\n\n\n")
+                    st.write("\n\n\n\n\n\n")
                 else:
-                    st.error("💥 Failed to generate titles. Please try again!")
-
+                    st.error("💥**Failed to write Letter. Please try again!**")
 
 
 def generate_youtube_title(target_audience, main_points, tone_style, use_case):
@@ -184,7 +184,7 @@ def generate_text_with_exception_handling(prompt):
             },
         ]
 
-        model = genai.GenerativeModel(model_name="gemini-1.5-flash-latest",
+        model = genai.GenerativeModel(model_name="gemini-1.5-flash",
                                       generation_config=generation_config,
                                       safety_settings=safety_settings)
 
