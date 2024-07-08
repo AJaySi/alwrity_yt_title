@@ -14,35 +14,45 @@ import google.generativeai as genai
 def main():
     # Set page configuration
     st.set_page_config(
-        page_title="Alwrity - AI YouTube Title Generator (Beta)",
-        layout="wide",
+        page_title="Alwrity - AI YouTube Title Generator",
     )
     # Remove the extra spaces from margin top.
     st.markdown("""
         <style>
-               .block-container {
-                    padding-top: 0rem;
-                    padding-bottom: 0rem;
-                    padding-left: 1rem;
-                    padding-right: 1rem;
-                }
-        </style>
-        """, unsafe_allow_html=True)
-    st.markdown(f"""
-      <style>
-      [class="st-emotion-cache-7ym5gk ef3psqc12"]{{
-            display: inline-block;
-            padding: 5px 20px;
-            background-color: #4681f4;
-            color: #FBFFFF;
-            width: 300px;
-            height: 35px;
+        ::-webkit-scrollbar-track {
+        background: #e1ebf9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #90CAF9;
+            border-radius: 10px;
+            border: 3px solid #e1ebf9;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64B5F6;
+        }
+
+        ::-webkit-scrollbar {
+            width: 16px;
+        }
+        div.stButton > button:first-child {
+            background: #1565C0;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
             text-align: center;
             text-decoration: none;
+            display: inline-block;
             font-size: 16px;
-            border-radius: 8px;’
-      }}
-      </style>
+            margin: 10px 2px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+        }
+        </style>
     """
     , unsafe_allow_html=True)
 
@@ -54,48 +64,51 @@ def main():
     hide_streamlit_footer = '<style>#MainMenu {visibility: hidden;} footer {visibility: hidden;}</style>'
     st.markdown(hide_streamlit_footer, unsafe_allow_html=True)
 
-    with st.expander("**PRO-TIP** - Read the instructions below.", expanded=True):
+    st.title("✍️  Alwrity - AI YouTube Video Title Generator")
+
+    # Input section
+    with st.expander("**PRO-TIP 💡** - Read the instructions below.", expanded=True):
         col1, col2 = st.columns([5, 5])
         with col1:
-            main_points = st.text_area('**What is your video about ?**', 
-                    placeholder='Write few words on your video for title ? (e.g., "New trek, Latest in news, Finance, Tech...")')
-            tone_style = st.selectbox('**Select Tone & Style**', ['Casual', 'Professional', 'Humorous', 'Formal', 'Informal', 'Inspirational'])
+            main_points = st.text_area(
+                '**What is your video about?**',
+                placeholder='Write a few words about your video for the title (e.g., "New trek, Latest in news, Finance, Tech...")'
+            )
+            tone_style = st.selectbox(
+                '**Select Tone & Style 📝**',
+                ['Casual', 'Professional', 'Humorous', 'Formal', 'Informal', 'Inspirational']
+            )
         with col2:
-            target_audience = st.multiselect('**Select Video Target Audience(One Or Multiple)**', [
-                'Beginners',
-                'Marketers',
-                'Gamers',
-                'Foodies',
-                'Entrepreneurs',
-                'Students',
-                'Parents',
-                'Tech Enthusiasts',
-                'General Audience',
-                'News article',
-                'Finance Article'])
+            target_audience = st.multiselect(
+                '**Select Video Target Audience (One or Multiple) 👥**',
+                [
+                    'Beginners', 'Marketers', 'Gamers', 'Foodies', 'Entrepreneurs',
+                    'Students', 'Parents', 'Tech Enthusiasts', 'General Audience', 
+                    'News article', 'Finance Article'
+                ]
+            )
+            use_case = st.selectbox(
+                '**YouTube Title Use Case 📹**',
+                [
+                    'Tutorials', 'Product Reviews', 'Explainer Videos', 'Vlogs',
+                    'Motivational Speeches', 'Comedy Skits', 'Educational Content'
+                ]
+            )
     
-            use_case = st.selectbox('**Youtube Title Use Case**', [
-                'Tutorials',
-                'Product Reviews',
-                'Explainer Videos',
-                'Vlogs',
-                'Motivational Speeches',
-                'Comedy Skits',
-                'Educational Content'
-            ])
-
-    if st.button('**Write YT Titles**'):
-        with st.status("Assigning AI professional to write your YT Titles..", expanded=True) as status:
+    # Generate YouTube Titles button
+    if st.button('**Generate YouTube Titles 🎬**'):
+        with st.spinner("Assigning AI professional to write your YouTube Titles..."):
             if not main_points:
                 st.error("🚫 Please provide all required inputs.")
             else:
                 response = generate_youtube_title(target_audience, main_points, tone_style, use_case)
                 if response:
-                    st.subheader(f'**🧕👩: Your Final youtube Titles !**')
-                    st.write(response)
-                    st.write("\n\n\n\n\n\n")
+                    st.subheader('**Your Final YouTube Titles! 📢**')
+                    st.markdown(response)
+                    st.write("\n\n\n\n")
                 else:
-                    st.error("💥**Failed to write Letter. Please try again!**")
+                    st.error("💥 Failed to generate titles. Please try again!")
+
 
 
 def generate_youtube_title(target_audience, main_points, tone_style, use_case):
